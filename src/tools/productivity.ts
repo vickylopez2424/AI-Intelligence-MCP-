@@ -1,8 +1,17 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { readFile, writeFile } from "fs/promises";
+import { readFile, writeFile, chmod } from "fs/promises";
 import { join } from "path";
 import { homedir } from "os";
+import { execFile } from "child_process";
+import { promisify } from "util";
+import {
+  validateUrl,
+  sanitizeError,
+  MAX_STRING_LENGTH,
+} from "../utils/validation.js";
+
+const execFileAsync = promisify(execFile);
 
 const TODOS_FILE = join(homedir(), ".claudeworker-todos.json");
 
@@ -23,7 +32,7 @@ async function loadTodos(): Promise<Todo[]> {
 }
 
 async function saveTodos(todos: Todo[]): Promise<void> {
-  await writeFile(TODOS_FILE, JSON.stringify(todos, null, 2));
+  await writeFile(TODOS_FILE, JSON.stringify(todos, null, 2), { mode: 0o600 });
 }
 
 export function registerProductivityTools(server: McpServer) {
@@ -35,8 +44,8 @@ export function registerProductivityTools(server: McpServer) {
       action: z
         .enum(["add", "complete", "remove", "list"])
         .describe("Action to perform"),
-      text: z.string().optional().describe("Todo text (required for 'add')"),
-      id: z.number().optional().describe("Todo ID (required for 'complete' and 'remove')"),
+      text: z.string().max(500).optional().describe("Todo text (required for 'add')"),
+      id: z.number().int().optional().describe("Todo ID (required for 'complete' and 'remove')"),
     },
     async ({ action, text, id }) => {
       const todos = await loadTodos();
@@ -120,17 +129,30 @@ export function registerProductivityTools(server: McpServer) {
   // --- summarize_url ---
   server.tool(
     "summarize_url",
-    "Fetch a URL and return its text content (HTML stripped to plain text).",
+    "Fetch a public URL and return its text content (HTML stripped to plain text). Internal/private addresses are blocked.",
     {
-      url: z.string().describe("The URL to fetch and summarize"),
+      url: z.string().max(MAX_STRING_LENGTH).describe("The URL to fetch and summarize (must be public, http/https only)"),
       maxLength: z
         .number()
+        .int()
+        .min(100)
+        .max(100000)
         .default(5000)
         .describe("Maximum character length of returned content"),
     },
     async ({ url, maxLength }) => {
+      // SSRF protection
+      const urlCheck = validateUrl(url);
+      if (!urlCheck.valid) {
+        return {
+          content: [{ type: "text" as const, text: `Error: ${urlCheck.error}` }],
+        };
+      }
+
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          signal: AbortSignal.timeout(30000),
+        });
         const html = await response.text();
 
         // Basic HTML to text conversion
@@ -159,7 +181,7 @@ export function registerProductivityTools(server: McpServer) {
       } catch (error: any) {
         return {
           content: [
-            { type: "text" as const, text: `Failed to fetch ${url}: ${error.message}` },
+            { type: "text" as const, text: `Failed to fetch URL: ${sanitizeError(error)}` },
           ],
         };
       }
@@ -171,8 +193,8 @@ export function registerProductivityTools(server: McpServer) {
     "send_notification",
     "Send a macOS desktop notification.",
     {
-      title: z.string().describe("Notification title"),
-      message: z.string().describe("Notification body text"),
+      title: z.string().max(200).describe("Notification title"),
+      message: z.string().max(1000).describe("Notification body text"),
       sound: z
         .boolean()
         .default(true)
@@ -180,27 +202,28 @@ export function registerProductivityTools(server: McpServer) {
     },
     async ({ title, message, sound }) => {
       try {
-        const { exec } = await import("child_process");
-        const { promisify } = await import("util");
-        const execAsync = promisify(exec);
+        // Sanitize inputs — strip everything except safe characters
+        const safeTitle = title.replace(/[^a-zA-Z0-9 _\-.,!?:;()]/g, "");
+        const safeMessage = message.replace(/[^a-zA-Z0-9 _\-.,!?:;()\n]/g, "");
 
-        const soundFlag = sound ? 'sound name "default"' : "";
-        await execAsync(
-          `osascript -e 'display notification "${message.replace(/"/g, '\\"')}" with title "${title.replace(/"/g, '\\"')}" ${soundFlag}'`
-        );
+        const soundClause = sound ? 'sound name "default"' : "";
+        const script = `display notification "${safeMessage}" with title "${safeTitle}" ${soundClause}`;
+
+        // Use execFile with explicit args — no shell interpolation
+        await execFileAsync("osascript", ["-e", script], { timeout: 5000 });
 
         return {
           content: [
             {
               type: "text" as const,
-              text: `Notification sent: **${title}** — ${message}`,
+              text: `Notification sent: **${safeTitle}** — ${safeMessage}`,
             },
           ],
         };
       } catch (error: any) {
         return {
           content: [
-            { type: "text" as const, text: `Notification error: ${error.message}` },
+            { type: "text" as const, text: `Notification error: ${sanitizeError(error)}` },
           ],
         };
       }
