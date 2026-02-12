@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Intelligence MCP — Supercharge Your AI with Custom Tools</title>
+  <meta name="description" content="A premium MCP server with 31 tools across 8 categories. Give Claude, ChatGPT, and any AI new powers — dev workflows, databases, Git, system ops, and more.">
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: #1a1a2e;
+      --bg-card-hover: #22223a;
+      --accent: #6c5ce7;
+      --accent-light: #a29bfe;
+      --accent-glow: rgba(108, 92, 231, 0.3);
+      --green: #00e676;
+      --green-dark: #00c853;
+      --orange: #ff9100;
+      --blue: #448aff;
+      --text-primary: #f0f0f5;
+      --text-secondary: #9898b0;
+      --text-muted: #6a6a82;
+      --border: #2a2a3e;
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* --- Nav --- */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-light), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.4rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      background: var(--accent-light);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 30px var(--accent-glow);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: rgba(108, 92, 231, 0.1);
+    }
+    .btn-large {
+      padding: 0.9rem 2rem;
+      font-size: 1.05rem;
+      border-radius: 10px;
+    }
+
+    /* --- Hero --- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: rgba(108, 92, 231, 0.15);
+      border: 1px solid rgba(108, 92, 231, 0.3);
+      border-radius: 100px;
+      font-size: 0.85rem;
+      color: var(--accent-light);
+      margin-bottom: 2rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      max-width: 800px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent-light), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .hero-stats .stat {
+      text-align: center;
+    }
+    .hero-stats .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent-light);
+    }
+    .hero-stats .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* --- Sections --- */
+    section {
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 1rem;
+    }
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* --- How It Works --- */
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+    .flow-step {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      min-width: 180px;
+    }
+    .flow-step .step-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .flow-step h4 { font-size: 1rem; margin-bottom: 0.3rem; }
+    .flow-step p { font-size: 0.8rem; color: var(--text-muted); }
+    .flow-arrow {
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+
+    /* --- Tool Categories --- */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .tool-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+    .tool-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+    .tool-card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .tool-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.5rem;
+    }
+    .tool-card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .tool-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .tool-tag {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      background: rgba(108, 92, 231, 0.15);
+      color: var(--accent-light);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .icon-dev { background: rgba(68, 138, 255, 0.15); }
+    .icon-data { background: rgba(0, 230, 118, 0.15); }
+    .icon-prod { background: rgba(255, 145, 0, 0.15); }
+    .icon-sys { background: rgba(255, 82, 82, 0.15); }
+    .icon-creative { background: rgba(234, 128, 252, 0.15); }
+    .icon-db { background: rgba(0, 230, 118, 0.15); }
+    .icon-git { background: rgba(255, 145, 0, 0.15); }
+    .icon-test { background: rgba(68, 138, 255, 0.15); }
+
+    /* --- Pricing --- */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .price-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      position: relative;
+      transition: all 0.3s;
+    }
+    .price-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+    .price-card.featured {
+      border-color: var(--accent);
+      box-shadow: 0 0 40px var(--accent-glow);
+    }
+    .price-card.featured::before {
+      content: 'Most Popular';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 0.3rem 1.2rem;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .price-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    .price-card .price {
+      font-size: 3rem;
+      font-weight: 800;
+      margin: 1rem 0;
+    }
+    .price-card .price span {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .price-card .price-desc {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    .price-features {
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+    .price-features li {
+      padding: 0.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+    .price-features li::before {
+      content: '✓';
+      color: var(--green);
+      font-weight: 700;
+    }
+    .price-features li.disabled {
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+    .price-features li.disabled::before {
+      content: '—';
+      color: var(--text-muted);
+    }
+
+    /* --- Code Block --- */
+    .code-section {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.2rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+    }
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .code-dot.red { background: #ff5f57; }
+    .code-dot.yellow { background: #ffbd2e; }
+    .code-dot.green { background: #28c840; }
+    .code-title {
+      margin-left: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .code-body {
+      padding: 1.5rem;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+    .code-body .comment { color: var(--text-muted); }
+    .code-body .cmd { color: var(--green); }
+    .code-body .flag { color: var(--accent-light); }
+    .code-body .str { color: var(--orange); }
+
+    /* --- Footer --- */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    footer a {
+      color: var(--accent-light);
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      nav { padding: 0.8rem 1rem; }
+      .nav-links { gap: 1rem; }
+      .nav-links a:not(.btn) { display: none; }
+      .hero { padding: 5rem 1.5rem 3rem; }
+      .hero-stats { gap: 1.5rem; }
+      section { padding: 4rem 1.5rem; }
+      .flow { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="logo">AI Intelligence MCP</div>
+    <div class="nav-links">
+      <a href="#tools">Tools</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#setup">Setup</a>
+      <a href="https://github.com/nonbinarytechnology-collab/AI-Intelligence-MCP-" class="btn btn-secondary">GitHub</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="badge">Open Source MCP Server</div>
+    <h1>Give Your AI <span>Superpowers</span></h1>
+    <p>31 tools across 8 categories. Dev workflows, databases, Git, system ops, creative tools — all through the Model Context Protocol.</p>
+    <div class="hero-buttons">
+      <a href="#setup" class="btn btn-primary btn-large">Get Started</a>
+      <a href="https://github.com/nonbinarytechnology-collab/AI-Intelligence-MCP-" class="btn btn-secondary btn-large">View Source</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-value">31</div>
+        <div class="stat-label">Tools</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">8</div>
+        <div class="stat-label">Categories</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">2</div>
+        <div class="stat-label">Transports</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">3</div>
+        <div class="stat-label">Tiers</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section>
+    <div class="section-header">
+      <h2>How It Works</h2>
+      <p>Your AI connects to your MCP server and discovers new tools automatically. No plugins, no config — just connect and go.</p>
+    </div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-icon">💬</div>
+        <h4>You ask Claude</h4>
+        <p>"Check port 3000"</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-icon">🔍</div>
+        <h4>Claude finds tool</h4>
+        <p>port_scan matches</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-icon">⚡</div>
+        <h4>MCP server runs it</h4>
+        <p>Executes securely</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-icon">✅</div>
+        <h4>Results returned</h4>
+        <p>Formatted response</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tools -->
+  <section id="tools">
+    <div class="section-header">
+      <h2>31 Tools, 8 Categories</h2>
+      <p>Everything your AI needs to be productive, from code to databases to creative work.</p>
+    </div>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-card-icon icon-dev">🛠</div>
+        <h3>Dev Workflow</h3>
+        <p>Run tests, lint code, scaffold projects, and search across codebases.</p>
+        <div class="tool-list">
+          <span class="tool-tag">run_tests</span>
+          <span class="tool-tag">lint_code</span>
+          <span class="tool-tag">scaffold_project</span>
+          <span class="tool-tag">search_docs</span>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-card-icon icon-data">📡</div>
+        <h3>Data & API</h3>
+        <p>Make HTTP requests, parse CSV files, and transform JSON data.</p>
+        <div class="tool-list">
+          <span class="tool-tag">fetch_api</span>
+          <span class="tool-tag">parse_csv</span>
+          <span class="tool-tag">transform_json</span>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-card-icon icon-prod">📋</div>
+        <h3>Productivity</h3>
+        <p>Manage todos, summarize web pages, and send desktop notifications.</p>
+        <div class="tool-list">
+          <span class="tool-tag">manage_todos</span>
+          <span class="tool-tag">summarize_url</span>
+          <span class="tool-tag">send_notification</span>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-card-icon icon-sys">🖥</div>
+        <h3>System & Ops</h3>
+        <p>Monitor system health, manage Docker, scan ports, and analyze logs.</p>
+        <div class="tool-list">
+          <span class="tool-tag">system_health</span>
+          <span class="tool-tag">docker_manage</span>
+          <span class="tool-tag">port_scan</span>
+          <span class="tool-tag">log_analyzer</span>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-card-icon icon-creative">🎨</div>
+        <h3>Creative</h3>
+        <p>Generate ASCII art, color palettes, and AI image prompts.</p>
+        <div class="tool-list">
+          <span class="tool-tag">ascii_art</span>
+          <span class="tool-tag">color_palette</span>
+          <span class="tool-tag">image_prompt</span>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-card-icon icon-db">🗄</div>
+        <h3>Database</h3>
+        <p>Query SQLite databases, inspect schemas, and export data.</p>
+        <div class="tool-list">
+          <span class="tool-tag">query_database</span>
+          <span class="tool-tag">schema_inspector</span>
+          <span class="tool-tag">export_data</span>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-card-icon icon-git">🔀</div>
+        <h3>Git & GitHub</h3>
+        <p>Full git status, commit logs, diffs, branches, and repo statistics.</p>
+        <div class="tool-list">
+          <span class="tool-tag">git_status</span>
+          <span class="tool-tag">git_log</span>
+          <span class="tool-tag">git_diff</span>
+          <span class="tool-tag">git_branch</span>
+          <span class="tool-tag">repo_stats</span>
+        </div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-card-icon icon-test">🧪</div>
+        <h3>Testing & CI</h3>
+        <p>Test coverage reports, command benchmarking, and CI status checks.</p>
+        <div class="tool-list">
+          <span class="tool-tag">test_coverage</span>
+          <span class="tool-tag">benchmark</span>
+          <span class="tool-tag">ci_status</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing">
+    <div class="section-header">
+      <h2>Simple Pricing</h2>
+      <p>Start free, upgrade when you need more power.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>Free</h3>
+        <div class="price">$0 <span>/forever</span></div>
+        <p class="price-desc">Get started with core tools</p>
+        <ul class="price-features">
+          <li>8 core tools</li>
+          <li>50 calls per day</li>
+          <li>stdio transport (local)</li>
+          <li>Community support</li>
+          <li class="disabled">Pro tools</li>
+          <li class="disabled">HTTP hosting</li>
+        </ul>
+        <a href="#setup" class="btn btn-secondary" style="width:100%; justify-content:center;">Get Started</a>
+      </div>
+      <div class="price-card featured">
+        <h3>Pro</h3>
+        <div class="price">$19 <span>/month</span></div>
+        <p class="price-desc">Full power for developers</p>
+        <ul class="price-features">
+          <li>24 tools unlocked</li>
+          <li>1,000 calls per day</li>
+          <li>stdio + HTTP transport</li>
+          <li>Priority support</li>
+          <li>Dev workflow tools</li>
+          <li>Creative & testing tools</li>
+        </ul>
+        <a href="#setup" class="btn btn-primary" style="width:100%; justify-content:center;">Start Pro Trial</a>
+      </div>
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <div class="price">$49 <span>/month</span></div>
+        <p class="price-desc">Unlimited, for teams</p>
+        <ul class="price-features">
+          <li>All 31 tools</li>
+          <li>Unlimited calls</li>
+          <li>All transports + auth</li>
+          <li>Dedicated support</li>
+          <li>Database tools</li>
+          <li>Custom tool development</li>
+        </ul>
+        <a href="#setup" class="btn btn-secondary" style="width:100%; justify-content:center;">Contact Sales</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Setup -->
+  <section id="setup">
+    <div class="section-header">
+      <h2>Up and Running in 60 Seconds</h2>
+      <p>Three commands. That's it.</p>
+    </div>
+    <div class="code-section">
+      <div class="code-header">
+        <div class="code-dot red"></div>
+        <div class="code-dot yellow"></div>
+        <div class="code-dot green"></div>
+        <span class="code-title">Terminal</span>
+      </div>
+      <div class="code-body">
+        <span class="comment"># Clone and build</span><br>
+        <span class="cmd">git clone</span> <span class="str">https://github.com/nonbinarytechnology-collab/AI-Intelligence-MCP-.git</span><br>
+        <span class="cmd">cd</span> AI-Intelligence-MCP- && <span class="cmd">npm install</span> && <span class="cmd">npm run build</span><br><br>
+        <span class="comment"># Connect to Claude Code</span><br>
+        <span class="cmd">claude mcp add</span> <span class="flag">ai-intelligence-mcp</span> <span class="str">-- node dist/index.js</span><br><br>
+        <span class="comment"># Or run as a hosted server</span><br>
+        <span class="cmd">API_KEYS</span>=<span class="str">your-key</span> <span class="cmd">npm run start:http</span><br>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="text-align: center; padding-bottom: 8rem;">
+    <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Ready to supercharge your AI?</h2>
+    <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem;">Join developers building the future with MCP.</p>
+    <div class="hero-buttons">
+      <a href="https://github.com/nonbinarytechnology-collab/AI-Intelligence-MCP-" class="btn btn-primary btn-large">Get Started Free</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="https://github.com/nonbinarytechnology-collab/AI-Intelligence-MCP-">GitHub</a>
+      <a href="https://modelcontextprotocol.io">MCP Docs</a>
+      <a href="https://github.com/nonbinarytechnology-collab/AI-Intelligence-MCP-/issues">Support</a>
+    </div>
+    <p>Built by <a href="https://github.com/nonbinarytechnology-collab">nonbinarytechnology</a>. Powered by the Model Context Protocol.</p>
+  </footer>
+
+</body>
+</html>
