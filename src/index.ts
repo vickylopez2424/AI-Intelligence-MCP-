@@ -7,7 +7,7 @@ import { registerProductivityTools } from "./tools/productivity.js";
 import { registerSystemTools } from "./tools/system-ops.js";
 
 const server = new McpServer({
-  name: "ClaudeWorker",
+  name: "AI-Intelligence-MCP",
   version: "1.0.0",
 });
 
@@ -21,7 +21,7 @@ registerSystemTools(server);
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("ClaudeWorker MCP server running on stdio");
+  console.error("AI Intelligence MCP server running on stdio");
 }
 
 main().catch((error) => {

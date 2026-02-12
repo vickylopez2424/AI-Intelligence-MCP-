@@ -1,5 +1,4 @@
-# AI Intelligence
-
+# AI Intelligence MCP
 
 A custom MCP (Model Context Protocol) server that gives Claude new tools — dev workflows, API access, productivity, and system ops.
 
@@ -23,7 +22,7 @@ npm run build
 ## Connect to Claude Code
 
 ```bash
-claude mcp add claudeworker -- node /path/to/ClaudeWorker/dist/index.js
+claude mcp add ai-intelligence-mcp -- node /path/to/AI-Intelligence-MCP/dist/index.js
 ```
 
 ## Connect to Claude Desktop
@@ -33,9 +32,9 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "claudeworker": {
+    "ai-intelligence-mcp": {
       "command": "node",
-      "args": ["/path/to/ClaudeWorker/dist/index.js"]
+      "args": ["/path/to/AI-Intelligence-MCP/dist/index.js"]
     }
   }
 }

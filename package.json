@@ -1,5 +1,5 @@
 {
-  "name": "claudeworker",
+  "name": "ai-intelligence-mcp",
   "version": "1.0.0",
   "description": "A custom MCP server that gives Claude superpowers — dev tools, API access, system ops, and more.",
   "main": "dist/index.js",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nonbinarytechnology-collab/ClaudeWorker.git"
+    "url": "git+https://github.com/nonbinarytechnology-collab/AI-Intelligence-MCP.git"
   },
   "keywords": [
     "mcp",
@@ -23,9 +23,9 @@
   "author": "nonbinarytechnology-collab",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nonbinarytechnology-collab/ClaudeWorker/issues"
+    "url": "https://github.com/nonbinarytechnology-collab/AI-Intelligence-MCP/issues"
   },
-  "homepage": "https://github.com/nonbinarytechnology-collab/ClaudeWorker#readme",
+  "homepage": "https://github.com/nonbinarytechnology-collab/AI-Intelligence-MCP#readme",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.26.0",
     "zod": "^4.3.6"

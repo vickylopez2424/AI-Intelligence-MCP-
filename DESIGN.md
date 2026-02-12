@@ -1,8 +1,8 @@
-# ClaudeWorker — MCP Server Design
+# AI Intelligence MCP — Server Design
 
 ## What Is This?
 
-ClaudeWorker is a custom **Model Context Protocol (MCP) server** — a server you build
+AI Intelligence MCP is a custom **Model Context Protocol (MCP) server** — a server you build
 that gives AI models like Claude new tools and capabilities. Instead of Claude only
 knowing what it was trained on, your MCP server lets it reach out and **do things**
 in the real world: hit APIs, query databases, control devices, automate workflows.
@@ -19,7 +19,7 @@ in the real world: hit APIs, query databases, control devices, automate workflow
          │  JSON-RPC over stdio or HTTP
          ▼
 ┌─────────────────────┐
-│   ClaudeWorker      │  ← YOUR SERVER
+│   AI Intelligence   │  ← YOUR SERVER
 │   (MCP Server)      │
 │                     │
 │  ┌───────────────┐  │
@@ -67,7 +67,7 @@ in the real world: hit APIs, query databases, control devices, automate workflow
 ## Project Structure
 
 ```
-ClaudeWorker/
+AI-Intelligence-MCP/
 ├── src/
 │   ├── index.ts              # Server entry point — registers tools & starts server
 │   ├── tools/                # Each tool in its own file
@@ -139,7 +139,7 @@ export const exampleTool = {
       content: [
         {
           type: "text" as const,
-          text: `Hello, ${name}! Welcome to ClaudeWorker.`,
+          text: `Hello, ${name}! Welcome to AI Intelligence MCP.`,
         },
       ],
     };
@@ -154,7 +154,7 @@ export const exampleTool = {
 ### Claude Code (CLI)
 ```bash
 # stdio transport (local)
-claude mcp add claudeworker -- node /path/to/ClaudeWorker/dist/index.js
+claude mcp add ai-intelligence-mcp -- node /path/to/AI-Intelligence-MCP/dist/index.js
 
 # HTTP transport (remote)
 claude mcp add --transport http claudeworker http://localhost:3000/mcp
@@ -165,9 +165,9 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "claudeworker": {
+    "ai-intelligence-mcp": {
       "command": "node",
-      "args": ["/path/to/ClaudeWorker/dist/index.js"]
+      "args": ["/path/to/AI-Intelligence-MCP/dist/index.js"]
     }
   }
 }
@@ -191,7 +191,7 @@ npm run dev
 npx @modelcontextprotocol/inspector node dist/index.js
 
 # 5. Connect to Claude Code
-claude mcp add claudeworker -- node dist/index.js
+claude mcp add ai-intelligence-mcp -- node dist/index.js
 ```
 
 ---
