@@ -1,4 +1,5 @@
-# ClaudeWorker
+# AI Intelligence
+
 
 A custom MCP (Model Context Protocol) server that gives Claude new tools — dev workflows, API access, productivity, and system ops.
 
