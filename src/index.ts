@@ -1,23 +1,14 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-
-import { registerDevTools } from "./tools/dev-workflow.js";
-import { registerDataTools } from "./tools/data-api.js";
-import { registerProductivityTools } from "./tools/productivity.js";
-import { registerSystemTools } from "./tools/system-ops.js";
+import { registerAllTools } from "./register.js";
 
 const server = new McpServer({
   name: "AI-Intelligence-MCP",
   version: "1.0.0",
 });
 
-// Register all tool categories
-registerDevTools(server);
-registerDataTools(server);
-registerProductivityTools(server);
-registerSystemTools(server);
+registerAllTools(server);
 
-// Start the server
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
